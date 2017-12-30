@@ -34,6 +34,20 @@ def boxes_check(mat):
 def sudoku_solved(mat):
     return rows_check(mat) and cols_check(mat) and boxes_check(mat)
     
+def row_peers(mat, r,c):
+    return [(r,i) for i in range(len(mat[r])) if i != c]
+
+def col_peers(mat, r,c):
+    return [(i,c) for i in range(len(mat)) if i != r]
+
+def box_peers(mat, r,c):
+    top_row = int(r/3)*3
+    left_col = int(c/3)*3
+    return [(i,j) for i in range(top_row,top_row+3,1) for j in range(left_col,left_col+3,1) if not (i==r and j==c)]
+
+def peers(mat, r,c):
+    return row_peers(mat,r,c) + col_peers(mat, r,c) + box_peers(mat, r,c)
+
 def row_numbers(m, r):
     return set(m[r])
 
@@ -50,12 +64,24 @@ def box_numbers(m,r,c):
             s.add(m[i][j])
     return s
 
+def adjust_peers(m, r,c, vacant):
+    #print ('adjusting peers of %d,%d=%d' % (r,c,m[r][c]))
+    p = peers(m, r,c)
+    for v in vacant:
+        ((rx,cx), ch) = v
+        if (rx,cx) in p and len(ch)>1:
+            v[1] = set(ch) - set([m[r][c]])
+            #print ('changed peer (%d,%d) from %s to %s'% (rx,cx, ch, v[1]))
+            if len(v[1]) == 1:
+                m[rx][cx] = next(iter(v[1]))
+                adjust_peers(m, rx,cx, vacant)
+
 #given a position in m, return list of applicable integers
 def possibilities(m, r, c):
     return set(range(1,10,1)) - row_numbers(m, r) - column_numbers(m, c) - box_numbers(m,int(r/3)*3,int(c/3)*3)
 
 def ordered_possibilities(m):
-    tuples = [((i,j), possibilities(m, i, j)) for i in range(len(m)) for j in range(len(m[0])) if m[i][j] == -1]
+    tuples = [[(i,j), possibilities(m, i, j)] for i in range(len(m)) for j in range(len(m[0])) if m[i][j] == -1]
     return sorted(tuples, key=lambda x: len(x[1]))
 
 def solve(m):
@@ -79,7 +105,7 @@ def restore(to, fr):
         for j in range(len(fr[i])):
             to[i][j] = fr[i][j]
     
-def solve_with_backtracking(m):
+def solve_with_backtracking(m, backPropagate=False):
     if not sudoku_solved(m):
         #we may mod the puzzle, but we may hit a dead end and have to restore it
         #for the caller - so save it first
@@ -92,6 +118,8 @@ def solve_with_backtracking(m):
         ((r,c), choices) = vacant[0]
         for choice in choices:
             m[r][c] = choice
+            if backPropagate:
+                adjust_peers(m, r,c, vacant)
             p = solve_with_backtracking(m)
             if p is not None:
                 return p
