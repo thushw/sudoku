@@ -104,6 +104,7 @@ class TestSudoku(unittest.TestCase):
         self.assertTrue(sudoku.sudoku_solved(m))
 
     def aiescargot(self, backPropagate):
+        #https://usatoday30.usatoday.com/news/offbeat/2006-11-06-sudoku_x.htm
         m = \
             [[ 8, 5,-1,-1,-1, 2, 4,-1,-1],
              [ 7, 2,-1,-1,-1,-1,-1,-1, 9],
@@ -120,6 +121,7 @@ class TestSudoku(unittest.TestCase):
         self.assertTrue(sudoku.sudoku_solved(m))
 
     def artoincala(self, backPropagate):
+        #http://www.mirror.co.uk/news/weird-news/worlds-hardest-sudoku-can-you-242294
         m = \
             [[-1,-1, 5, 3,-1,-1,-1,-1,-1],
              [ 8,-1,-1,-1,-1,-1,-1, 2,-1],
