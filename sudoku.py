@@ -9,28 +9,14 @@ def rows_check(mat):
     return all(no_dups(r) for r in mat)
 
 def cols_check(mat):
-    for c in range(len(mat[0])):
-        l = []
-        for r in range(len(mat)):
-            l.append(mat[r][c])
-        if not no_dups(l):
-            return False
-    return True
+    return all([True for c in range(len(mat[0])) if no_dups([mat[r][c] for r in range(len(mat))])])
 
 def box_ok(mat, r, c):
-    l = []
-    for i in range(r,r+3):
-        for j in range(c,c+3):
-            l.append(mat[i][j])
-    return no_dups(l)        
+    return no_dups([mat[i][j] for i in range(r,r+3) for j in range(c,c+3)])
 
 def boxes_check(mat):
-    for r in range(0,9,3):
-        for c in range(0,9,3):
-            if not box_ok(mat,r,c):
-                return False
-    return True
-    
+    return all(True for r in range(0,9,3) for c in range(0,9,3) if box_ok(mat,r,c))
+
 def sudoku_solved(mat):
     return rows_check(mat) and cols_check(mat) and boxes_check(mat)
     
