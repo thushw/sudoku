@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import sudoku
-import time
+from timeit import Timer as T
 
 def evil(backPropagate):
     m = \
@@ -16,13 +16,7 @@ def evil(backPropagate):
     p = sudoku.solve_with_backtracking(m, backPropagate)
 
 
-def timeit(f, backPropagate):
-    t0 = time.time()
-    for i in range(1000):
-        f(backPropagate)
-    t1 = time.time()
-    total = t1-t0
-    return total
-
-print ('time to solve without backPropagation %d' % timeit(evil, False))
-print ('time to solve with backPropagation %d' % timeit(evil, True))
+print ('solving without back propagation...')
+print (T(lambda: evil(False) ).repeat(repeat=1, number = 1000))
+print ('solving with back propagation...')
+print (T(lambda: evil(True) ).repeat(repeat=1, number = 1000))
