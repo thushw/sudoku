@@ -23,4 +23,4 @@ The sudoku puzzles have aptly named 4 categories:
 4. Evil
 
 The backtracking algorithm can solve the two hardest puzzles known todate. However, the backpropagation fails one hard puzzle
-by Arto Inkala. More debugging required!
+by Arto Inkala. More debugging required!!
