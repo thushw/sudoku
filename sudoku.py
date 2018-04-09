@@ -109,6 +109,8 @@ def solve_with_backtracking(m, backPropagate=False):
             p = solve_with_backtracking(m)
             if p is not None:
                 return p
+            #important to call restore vs assigning `save` back to `board`
+            #as the recursive caller will not get the changed reference
             restore(m, save) 
         return None #no solution    
     else:
